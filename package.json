@@ -1,0 +1,41 @@
+{
+  "name": "shubot",
+  "version": "1.0.0",
+  "description": "A Discord bot for Shurelya",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "ts-node-dev -P tsconfig.json --respawn --transpileOnly -r dotenv/config -- src/index.ts",
+    "lint": "eslint --fix ./**/*.ts",
+    "build": "tsc -p tsconfig.json"
+  },
+  "author": "Arimil",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "dateformat": "^3.0.3",
+    "discord.js": "^12.2.0"
+  },
+  "devDependencies": {
+    "@types/dateformat": "^3.0.1",
+    "@types/ws": "^7.2.4",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "^2.20.0",
+    "dotenv": "^8.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "lint-staged": "^9.5.0",
+    "prettier": "^1.19.1",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.5"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --ignore-path .gitignore --fix ",
+      "git add"
+    ]
+  }
+}

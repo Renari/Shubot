@@ -24,7 +24,12 @@ export default class Shubot {
     this.discordClient.login(process.env.DISCORD_TOKEN).catch(Shubot.log.error);
     this.getTwitchClips()
       .then(clips => {
-        this.lastClipDate = new Date(clips[0].created_at);
+        if (clips.length > 0) {
+          this.lastClipDate = new Date(clips[0].created_at);
+        } else {
+          // there are no clips, set the last clip date to now
+          this.lastClipDate = new Date();
+        }
       })
       .catch(err => {
         Shubot.log.error(err);

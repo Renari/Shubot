@@ -7,7 +7,7 @@ export default class Shubot {
   private readonly discordClient: Discord.Client;
   private readonly discordGuildId: string = '422420722649137162';
   private readonly discordClipChannelId: string = '700248116607189033';
-  private readonly refreshRate = 10000;
+  private readonly twitchClipRefreshRate = 30000;
   private lastClipDate: Date = new Date(0);
 
   public static readonly log = logger({
@@ -39,7 +39,7 @@ export default class Shubot {
 
   private ready(): void {
     Shubot.log.info('discord connection successful');
-    setInterval(this.checkTwitchClips.bind(this), this.refreshRate);
+    setInterval(this.checkTwitchClips.bind(this), this.twitchClipRefreshRate);
   }
 
   private getTwitchClips(): Promise<TwitchAPI.Clip[]> {

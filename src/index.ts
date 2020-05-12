@@ -4,6 +4,7 @@ import axios from 'axios';
 import { TwitchAPI } from './twitchapi';
 
 export default class Shubot {
+  private readonly version: string = "<version>";
   private readonly discordClient: Discord.Client;
   private readonly discordGuildId: string = '422420722649137162';
   private readonly discordClipChannelId: string = '700248116607189033';

@@ -46,6 +46,9 @@
         "assets": [
           {"path": "build/Shubot.tar.gz"}
         ]
+      }],
+      ["@semantic-release/exec", {
+        "prepareCmd": "sed -i 's/<version>/${steps.semantic.outputs.new_release_version}/' src/index.ts && npm run build && cd build && tar -czf Shubot.tar.gz **/* ../package.json ../package-lock.json"
       }]
     ]
   }

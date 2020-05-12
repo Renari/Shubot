@@ -13,15 +13,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
+    - uses: actions/setup-node@v1
       with:
         node-version: '14.x'
     - run: npm ci
-    - run: npm run build --if-present
-    - run: cd build && tar -czf Shubot.tar.gz * ../package.json ../package-lock.json
-    - name: Publish
-      uses: cycjimmy/semantic-release-action@v2
+    - uses: cycjimmy/semantic-release-action@v2
+      id: semantic
       with:
         semantic_version: 17.0.7
       env:

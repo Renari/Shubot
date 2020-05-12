@@ -16,6 +16,7 @@
     "discord.js": "^12.2.0"
   },
   "devDependencies": {
+    "@semantic-release/exec": "^5.0.0",
     "@types/dateformat": "^3.0.1",
     "@types/ws": "^7.2.4",
     "@typescript-eslint/eslint-plugin": "^2.20.0",
@@ -42,14 +43,22 @@
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
-      ["@semantic-release/github", {
-        "assets": [
-          {"path": "build/Shubot.tar.gz"}
-        ]
-      }],
-      ["@semantic-release/exec", {
-        "prepareCmd": "sed -i 's/<version>/${steps.semantic.outputs.new_release_version}/' src/index.ts && npm run build && cd build && tar -czf Shubot.tar.gz **/* ../package.json ../package-lock.json"
-      }]
+      [
+        "@semantic-release/github",
+        {
+          "assets": [
+            {
+              "path": "build/Shubot.tar.gz"
+            }
+          ]
+        }
+      ],
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "sed -i 's/<version>/${steps.semantic.outputs.new_release_version}/' src/index.ts && npm run build && cd build && tar -czf Shubot.tar.gz **/* ../package.json ../package-lock.json"
+        }
+      ]
     ]
   }
 }

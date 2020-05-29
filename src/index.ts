@@ -10,7 +10,7 @@ import customHandler from './message-handlers/custom-handler';
 import messageHandler from './message-handlers/message-handler';
 
 export default class Shubot {
-  private readonly version: string = "<version>";
+  public static readonly version: string = '<version>';
   private readonly discordClient: Discord.Client;
   private readonly discordGuildId: string = '422420722649137162';
   private readonly discordClipChannelId: string = '700248116607189033';
@@ -131,4 +131,8 @@ export default class Shubot {
   }
 }
 
-new Shubot();
+if (process.argv[2] == '--version') {
+  console.log(Shubot.version);
+} else {
+  new Shubot();
+}

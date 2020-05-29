@@ -1,0 +1,93 @@
+import Discord from 'discord.js';
+import messageHandler from './message-handler';
+import nedb from 'nedb';
+import Shubot from '../index';
+
+interface command {
+  name: string;
+  response: string;
+}
+
+export default class customHandler extends messageHandler {
+  private readonly database: nedb;
+  private commands: Map<string, string> = new Map();
+  private commandString = '';
+
+  constructor(discordClient: Discord.Client, database: nedb) {
+    super();
+    this.database = database;
+    this.database.find<command>({ type: 'customcommand' }, (err, commands) => {
+      for (let i = 0; i < commands.length; i++) {
+        this.commands.set(commands[i].name, commands[i].response);
+      }
+      this.generateCommandRegex();
+    });
+  }
+
+  protected match(message: string): RegExpMatchArray[] {
+    const match = message.match(new RegExp(`^(!(?:${this.commandString}))\s?(.+)?$`, 'i'));
+    return match ? [match] : [];
+  }
+
+  public handle(message: Discord.Message): void {
+    const match = this.match(message.content);
+    if (match.length) {
+      const command = match[0][1];
+      const args = match[0][2] ? customHandler.parseArgs(match[0][2]) : [];
+      switch (command) {
+        case '!commandadd':
+          // if we don't have 2 args there's either no command or no response
+          if (args.length !== 2)
+            message.channel
+              .send('```!commandadd <command name> <response>```')
+              .catch(Shubot.log.error);
+          else {
+            this.database.update(
+              { type: 'customcommand', name: args[0] },
+              { type: 'customcommand', name: args[0], response: args[1] },
+              { upsert: true },
+            );
+            this.commands.set(args[0], args[1]);
+            this.generateCommandRegex();
+            message.react('✅').catch(Shubot.log.error);
+          }
+          break;
+        case '!commandremove':
+          if(args.length !== 1)
+            message.channel.send('```!commandremove <command name>```').catch(Shubot.log.error);
+          else {
+            this.database.remove({type: 'customcommand', name: args[0]});
+            this.commands.delete(args[0]);
+            this.generateCommandRegex();
+            message.react('✅').catch(Shubot.log.error);
+          }
+          break;
+        default:
+          const response = this.commands.get(command.substr(1));
+          message.channel.send(response).catch(Shubot.log.error);
+      }
+    }
+  }
+
+  private static parseArgs(command: string): string[] {
+    const split = [...command.matchAll(/[^\s"']+|"([^"]*)"|'([^']*)'/g)];
+    const args = [];
+    for (const arg of split) {
+      if (arg[1]) {
+        // we had a quoted argument
+        args.push(arg[1]);
+      } else {
+        // we had an unquoted parameter
+        args.push(arg[0]);
+      }
+    }
+    return args;
+  }
+
+  private generateCommandRegex(): void {
+    this.commandString = '(?:commandadd)|(?:commandremove)';
+    for (const [key] of this.commands) {
+      this.commandString += `|(?:${key})`;
+    }
+  }
+}

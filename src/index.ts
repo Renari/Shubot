@@ -1,7 +1,13 @@
+import axios from 'axios';
 import Discord from 'discord.js';
 import logger from './logger';
-import axios from 'axios';
+import nedb from 'nedb';
+import path from 'path';
 import { TwitchAPI } from './twitchapi';
+
+// message handlers
+import customHandler from './message-handlers/custom-handler';
+import messageHandler from './message-handlers/message-handler';
 
 export default class Shubot {
   private readonly version: string = "<version>";
@@ -10,6 +16,8 @@ export default class Shubot {
   private readonly discordClipChannelId: string = '700248116607189033';
   private readonly twitchClipRefreshRate = 30000;
   private lastClipDate: Date = new Date(0);
+  private readonly messageHandlers: messageHandler[] = [];
+  private readonly database: nedb;
 
   public static readonly log = logger({
     timestamp: 'mm/dd/yy HH:MM:ss',
@@ -17,6 +25,11 @@ export default class Shubot {
   });
 
   constructor() {
+    this.database = new nedb({
+      filename: path.resolve('database.db'),
+      autoload: true,
+    });
+
     this.discordClient = new Discord.Client();
 
     this.discordClient.once('ready', () => this.ready());
@@ -40,7 +53,22 @@ export default class Shubot {
 
   private ready(): void {
     Shubot.log.info('discord connection successful');
+
+    // which message handlers we're loading
+    this.messageHandlers.push(new customHandler(this.discordClient, this.database));
+
+    this.discordClient.on('message', this.messageHandler.bind(this));
+
     setInterval(this.checkTwitchClips.bind(this), this.twitchClipRefreshRate);
+  }
+
+  private messageHandler(message: Discord.Message): void {
+    // ignore own messages
+    if (this.discordClient.user && message.author.equals(this.discordClient.user)) return;
+    // run the message through each message handler
+    this.messageHandlers.forEach(handler => {
+      handler.handle(message);
+    });
   }
 
   private getTwitchClips(): Promise<TwitchAPI.Clip[]> {

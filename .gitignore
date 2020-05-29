@@ -15,3 +15,6 @@ build/
 # dotenv environment variables file
 .env
 .env.test
+
+# database
+database.db

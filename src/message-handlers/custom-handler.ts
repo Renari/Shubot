@@ -1,4 +1,4 @@
-import Discord from 'discord.js';
+import Discord, { DMChannel, GuildMember, NewsChannel, TextChannel } from 'discord.js';
 import messageHandler from './message-handler';
 import nedb from 'nedb';
 import Shubot from '../index';
@@ -36,6 +36,8 @@ export default class customHandler extends messageHandler {
       const args = match[0][2] ? customHandler.parseArgs(match[0][2]) : [];
       switch (command) {
         case '!commandadd':
+          // this command requires permissions
+          if (!this.checkPermissions(message.member, message.channel)) return;
           // if we don't have 2 args there's either no command or no response
           if (args.length !== 2)
             message.channel
@@ -53,10 +55,12 @@ export default class customHandler extends messageHandler {
           }
           break;
         case '!commandremove':
-          if(args.length !== 1)
+          // this command requires permissions
+          if (!this.checkPermissions(message.member, message.channel)) return;
+          if (args.length !== 1)
             message.channel.send('```!commandremove <command name>```').catch(Shubot.log.error);
           else {
-            this.database.remove({type: 'customcommand', name: args[0]});
+            this.database.remove({ type: 'customcommand', name: args[0] });
             this.commands.delete(args[0]);
             this.generateCommandRegex();
             message.react('✅').catch(Shubot.log.error);
@@ -67,6 +71,23 @@ export default class customHandler extends messageHandler {
           message.channel.send(response).catch(Shubot.log.error);
       }
     }
+  }
+
+  private checkPermissions(user: GuildMember | null, channel: TextChannel | DMChannel | NewsChannel): boolean {
+    const hasPermissions =
+      // if the user is not set this is probably a DM
+      user !== null && (
+      // user is an admin
+      user.hasPermission(Discord.Permissions.FLAGS.ADMINISTRATOR) ||
+      // user is a moderator
+      user.roles.cache.has('424706015842402316'));
+    if (!hasPermissions) {
+      // to add a command you must be in the server and have the correct permissions
+      channel
+        .send("Sorry, you don't have the required permissions to run this command.")
+        .catch(Shubot.log.error);
+    }
+    return hasPermissions;
   }
 
   private static parseArgs(command: string): string[] {

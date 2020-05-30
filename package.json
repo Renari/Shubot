@@ -61,7 +61,7 @@
       [
         "@semantic-release/exec",
         {
-          "prepareCmd": "sed -i 's/<version>/${nextRelease.version}/' src/index.ts && npm run build && cd build && tar -czf Shubot.tar.gz **/* ../package.json ../package-lock.json"
+          "prepareCmd": "sed -i 's/<version>/${nextRelease.version}/' src/index.ts && npm run build && cd build && cp ../package.json ./ && cp ../package-lock.json ./ && tar -czf Shubot.tar.gz **/* *"
         }
       ]
     ]

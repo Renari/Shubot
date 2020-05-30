@@ -1,3 +1,4 @@
+import anidb from '../anidb';
 import Discord, { DMChannel, GuildMember, NewsChannel, TextChannel } from 'discord.js';
 import messageHandler from './message-handler';
 import nedb from 'nedb';
@@ -68,7 +69,18 @@ export default class customHandler extends messageHandler {
           break;
         default:
           const response = this.commands.get(command.substr(1));
-          message.channel.send(response).catch(Shubot.log.error);
+          if (response) {
+            // handle anidb links in custom commands
+            const anidbMatch = Array.from(response.matchAll(anidb.animeUrlRegex));
+            if (anidbMatch) {
+              new anidb().getShowData(anidbMatch[0][1]).then((data) => {
+                const embed = anidb.generateDiscordEmbed(data.anime)
+                message.channel.send(response, { embed }).catch(Shubot.log.error);
+              })
+            } else {
+              message.channel.send(response).catch(Shubot.log.error);
+            }
+          }
       }
     }
   }

@@ -6,6 +6,7 @@ import path from 'path';
 import { TwitchAPI } from './twitchapi';
 
 // message handlers
+import anidbHandler from './message-handlers/anidb-handler';
 import customHandler from './message-handlers/custom-handler';
 import messageHandler from './message-handlers/message-handler';
 
@@ -55,6 +56,7 @@ export default class Shubot {
     Shubot.log.info('discord connection successful');
 
     // which message handlers we're loading
+    this.messageHandlers.push(new anidbHandler());
     this.messageHandlers.push(new customHandler(this.discordClient, this.database));
 
     this.discordClient.on('message', this.messageHandler.bind(this));
@@ -132,7 +134,7 @@ export default class Shubot {
 }
 
 if (process.argv[2] == '--version') {
-  console.log(Shubot.version);
+  console.log(Shubot.version); // eslint-disable-line no-console
 } else {
   new Shubot();
 }

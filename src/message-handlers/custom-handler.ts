@@ -72,7 +72,7 @@ export default class customHandler extends messageHandler {
           if (response) {
             // handle anidb links in custom commands
             const anidbMatch = Array.from(response.matchAll(anidb.animeUrlRegex));
-            if (anidbMatch) {
+            if (anidbMatch.length) {
               new anidb().getShowData(anidbMatch[0][1]).then((data) => {
                 const embed = anidb.generateDiscordEmbed(data.anime)
                 message.channel.send(response, { embed }).catch(Shubot.log.error);

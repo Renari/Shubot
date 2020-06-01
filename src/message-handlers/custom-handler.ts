@@ -103,12 +103,15 @@ export default class customHandler extends messageHandler {
   }
 
   private static parseArgs(command: string): string[] {
-    const split = [...command.matchAll(/[^\s"']+|"([^"]*)"|'([^']*)'/g)];
+    const split = [...command.matchAll(/[^\s"'“]+|"([^"]*)"|'([^']*)'|“([^”]*)”/g)];
     const args = [];
     for (const arg of split) {
-      if (arg[1]) {
-        // we had a quoted argument
+      if (arg[1]) { // double quotes used
         args.push(arg[1]);
+      } else if (arg[2]) { // single quote used
+        args.push(arg[2]);
+      } else if (arg[3]) { // left and right quote used
+        args.push(arg[3]);
       } else {
         // we had an unquoted parameter
         args.push(arg[0]);

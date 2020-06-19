@@ -75,7 +75,7 @@ export default class Shubot {
 
   private getTwitchClips(): Promise<TwitchAPI.Clip[]> {
     return axios
-      .get('https://api.twitch.tv/kraken/clips/top?channel=Shurelia&period=day&limit=100', {
+      .get('https://api.twitch.tv/kraken/clips/top?channel=Leaflit&period=day&limit=100', {
         headers: {
           Accept: 'application/vnd.twitchtv.v5+json',
           'Client-ID': process.env.TWITCH_CLIENT_ID,

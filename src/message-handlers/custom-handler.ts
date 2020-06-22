@@ -92,7 +92,7 @@ export default class customHandler extends messageHandler {
       // user is an admin
       user.hasPermission(Discord.Permissions.FLAGS.ADMINISTRATOR) ||
       // user is a moderator
-      user.roles.cache.has('424706015842402316'));
+      user.roles.cache.has('717562244564647996'));
     if (!hasPermissions) {
       // to add a command you must be in the server and have the correct permissions
       channel

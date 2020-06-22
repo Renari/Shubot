@@ -13,8 +13,8 @@ import messageHandler from './message-handlers/message-handler';
 export default class Shubot {
   public static readonly version: string = '<version>';
   private readonly discordClient: Discord.Client;
-  private readonly discordGuildId: string = '422420722649137162';
-  private readonly discordClipChannelId: string = '700248116607189033';
+  private readonly discordGuildId: string = '717558249435562035';
+  private readonly discordClipChannelId: string = '717558882976661636';
   private readonly twitchClipRefreshRate = 30000;
   private lastClipDate: Date = new Date(0);
   private readonly messageHandlers: messageHandler[] = [];

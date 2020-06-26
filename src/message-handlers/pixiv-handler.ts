@@ -1,7 +1,7 @@
 import pixiv from '../pixiv';
 import Discord from 'discord.js';
 import messageHandler from './message-handler';
-import SaberAlter from '../index';
+import Shubot from '../index';
 
 export default class pixivHandler extends messageHandler {
   private readonly pixivClient: pixiv;
@@ -29,7 +29,7 @@ export default class pixivHandler extends messageHandler {
         .then(fullMessage => {
           pixivHandler.embedChecker(fullMessage);
         })
-        .catch(SaberAlter.log.error);
+        .catch(Shubot.log.error);
     } else {
       pixivHandler.embedChecker(newMessage);
     }
@@ -46,7 +46,7 @@ export default class pixivHandler extends messageHandler {
         /https?:\/\/(?:www\.)?pixiv.net\/(?:\w+\/)*artworks\/(\d+)/gi,
       );
       if (match) {
-        message.suppressEmbeds().catch(err => SaberAlter.log.error(err));
+        message.suppressEmbeds().catch(err => Shubot.log.error(err));
       }
     }
   }
@@ -58,7 +58,7 @@ export default class pixivHandler extends messageHandler {
        * if this message is in discords cache the embed will be attached already
        * if it is not in discords cache it'll get added by a messageUpdate call
        */
-      message.suppressEmbeds().catch(SaberAlter.log.error);
+      message.suppressEmbeds().catch(Shubot.log.error);
     }
     pixivIllustMatches.forEach(match => {
       this.pixivClient
@@ -97,7 +97,7 @@ export default class pixivHandler extends messageHandler {
             });
           });
         })
-        .catch(SaberAlter.log.error);
+        .catch(Shubot.log.error);
     });
   }
 

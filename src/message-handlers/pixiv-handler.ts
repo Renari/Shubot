@@ -1,6 +1,7 @@
-import pixiv from '../pixiv';
 import Discord from 'discord.js';
+import entities from 'entities';
 import messageHandler from './message-handler';
+import pixiv from '../pixiv';
 import Shubot from '../index';
 
 export default class pixivHandler extends messageHandler {
@@ -51,6 +52,22 @@ export default class pixivHandler extends messageHandler {
     }
   }
 
+  /**
+   * Converts a provided HTML description a markdown equivilent.
+   * @param description the description to convert
+   */
+  private static descriptionFormatter(description: string): string {
+    // decode html/xml entities
+    description = entities.decode(description);
+    // convert html links to markdown links
+    description = description.replace(/<a[^>]*href=["|']([^"']*)[^>]*>([^<]+)<\/a>/gi, '[$2]($1)');
+    // convert linebreaks to newlines
+    description = description.replace(/<br\s*\/?>/gi, '\n');
+    // convert <strong> to markdown bold
+    description = description.replace(/<strong>([^<]+)<\/strong>/gi, '**$1**')
+    return description;
+  }
+
   handle(message: Discord.Message): void {
     const pixivIllustMatches = this.match(message.content);
     if (pixivIllustMatches.length > 0 && message.embeds.length) {
@@ -73,10 +90,7 @@ export default class pixivHandler extends messageHandler {
           const fileName = match[1] + extensionMatch[0];
           this.pixivClient.getImage(imageMetadata).then(imageData => {
             return this.pixivClient.getAvatar(imageMetadata).then(avatar => {
-              const description = imageMetadata.illust.caption
-                .replace(/<a[^>]*href=["|']([^"']*)[^>]*>([^<]+)<\/a>/gi, '[$2]($1)')
-                .replace(/<br\s*\/?>/gi, '\n')
-                .replace(/<strong>([^<]+)<\/strong>/gi, '**$1**');
+              const description = pixivHandler.descriptionFormatter(imageMetadata.illust.caption);
               const embed = new Discord.MessageEmbed()
                 .setTitle(imageMetadata.illust.title)
                 .setDescription(description)

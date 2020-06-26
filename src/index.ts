@@ -85,7 +85,7 @@ export default class Shubot {
       })
       .then(res => {
         // sort the clips by date
-        const clips: TwitchAPI.Clip[] = res.data.clips;
+        const clips: TwitchAPI.Clip[] = res.data.clips || [];
         clips.sort((first, second) => {
           const firstDate = new Date(first.created_at).getTime();
           const secondDate = new Date(second.created_at).getTime();

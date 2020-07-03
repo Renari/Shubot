@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import entities from 'entities';
+import { decode as decodeEntities } from 'entities';
 import messageHandler from './message-handler';
 import pixiv from '../pixiv';
 import Shubot from '../index';
@@ -58,7 +58,7 @@ export default class pixivHandler extends messageHandler {
    */
   private static descriptionFormatter(description: string): string {
     // decode html/xml entities
-    description = entities.decode(description);
+    description = decodeEntities(description);
     // convert html links to markdown links
     description = description.replace(/<a[^>]*href=["|']([^"']*)[^>]*>([^<]+)<\/a>/gi, '[$2]($1)');
     // convert linebreaks to newlines

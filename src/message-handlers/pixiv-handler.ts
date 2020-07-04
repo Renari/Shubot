@@ -64,7 +64,7 @@ export default class pixivHandler extends messageHandler {
     // convert linebreaks to newlines
     description = description.replace(/<br\s*\/?>/gi, '\n');
     // convert <strong> to markdown bold
-    description = description.replace(/<strong>([^<]+)<\/strong>/gi, '**$1**')
+    description = description.replace(/<strong>([^<]+)<\/strong>/gi, '**$1**');
     return description;
   }
 

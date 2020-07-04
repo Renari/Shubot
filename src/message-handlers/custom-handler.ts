@@ -73,10 +73,10 @@ export default class customHandler extends messageHandler {
             // handle anidb links in custom commands
             const anidbMatch = Array.from(response.matchAll(anidb.animeUrlRegex));
             if (anidbMatch.length) {
-              new anidb().getShowData(anidbMatch[0][1]).then((data) => {
-                const embed = anidb.generateDiscordEmbed(data.anime)
+              new anidb().getShowData(anidbMatch[0][1]).then(data => {
+                const embed = anidb.generateDiscordEmbed(data.anime);
                 message.channel.send(response, { embed }).catch(Shubot.log.error);
-              })
+              });
             } else {
               message.channel.send(response).catch(Shubot.log.error);
             }
@@ -85,14 +85,17 @@ export default class customHandler extends messageHandler {
     }
   }
 
-  private checkPermissions(user: GuildMember | null, channel: TextChannel | DMChannel | NewsChannel): boolean {
+  private checkPermissions(
+    user: GuildMember | null,
+    channel: TextChannel | DMChannel | NewsChannel,
+  ): boolean {
     const hasPermissions =
       // if the user is not set this is probably a DM
-      user !== null && (
+      user !== null &&
       // user is an admin
-      user.hasPermission(Discord.Permissions.FLAGS.ADMINISTRATOR) ||
-      // user is a moderator
-      user.roles.cache.has('717562244564647996'));
+      (user.hasPermission(Discord.Permissions.FLAGS.ADMINISTRATOR) ||
+        // user is a moderator
+        user.roles.cache.has('717562244564647996'));
     if (!hasPermissions) {
       // to add a command you must be in the server and have the correct permissions
       channel
@@ -106,11 +109,14 @@ export default class customHandler extends messageHandler {
     const split = [...command.matchAll(/[^\s"'“]+|"([^"]*)"|'([^']*)'|“([^”]*)”/g)];
     const args = [];
     for (const arg of split) {
-      if (arg[1]) { // double quotes used
+      if (arg[1]) {
+        // double quotes used
         args.push(arg[1]);
-      } else if (arg[2]) { // single quote used
+      } else if (arg[2]) {
+        // single quote used
         args.push(arg[2]);
-      } else if (arg[3]) { // left and right quote used
+      } else if (arg[3]) {
+        // left and right quote used
         args.push(arg[3]);
       } else {
         // we had an unquoted parameter

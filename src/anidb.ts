@@ -5,7 +5,7 @@ import { default as axios, AxiosResponse } from 'axios';
 import { Mutex } from 'async-mutex';
 import xml2js from 'xml2js';
 import SaberAlter from './index';
-import Discord from "discord.js";
+import Discord from 'discord.js';
 
 export interface AnimeResponse {
   anime: Anime;

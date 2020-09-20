@@ -21,5 +21,7 @@ jobs:
       id: semantic
       with:
         semantic_version: 17
+        extra_plugins: |
+          @semantic-release/exec
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

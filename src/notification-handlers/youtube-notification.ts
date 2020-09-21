@@ -1,5 +1,6 @@
 import Discord from 'discord.js';
 import notificationHandler from './notification-handler';
+import Shubot from '..';
 import youtube from '../youtube';
 
 // interfaces
@@ -43,6 +44,10 @@ export default class youtubeNotification extends notificationHandler {
                 const video = videos.items[i].id?.videoId;
                 if (video) {
                   // post new videos to discord
+                  const title = videos.items[i].snippet?.title
+                    ? videos.items[i].snippet?.title
+                    : video;
+                  Shubot.log.info(`Found YouTube video ${title}`);
                   this.sendDiscordMessage(this.discordChannelId, `https://youtu.be/${video}`);
                 }
               }

@@ -50,7 +50,7 @@ export default class Shubot {
 
     // post new twitch clips in discord
     if (process.env.TWITCH_CLIENT_ID) {
-      new twitchNotification(this.discordClient, process.env.TWITCH_CLIENT_ID);
+      new twitchNotification(this.discordClient, process.env.TWITCH_CLIENT_ID, this.database);
     }
     // post new youtube videos in discord
     if (process.env.YOUTUBE_API_KEY && process.env.YOUTUBE_CHANNEL_ID) {

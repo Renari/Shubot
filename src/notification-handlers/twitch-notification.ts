@@ -5,29 +5,21 @@ import Shubot from '..';
 
 // interfaces
 import { TwitchAPI } from '../interfaces/twitchapi';
+import lastTwitchClipCheckDate from '../interfaces/lastTwitchClipCheckDate';
 
 export default class twitchNotification extends notificationHandler {
+  private readonly database: Nedb;
+  private readonly databaseType = 'lastTwitchClipCheckDate';
   private readonly discordClipChannelId: string = '717558882976661636';
   private readonly twitchClientId: string;
   private readonly twitchClipRefreshRate = 30000;
-  private lastClipDate: Date = new Date(0);
 
-  constructor(discordClient: Discord.Client, clientId: string) {
+  constructor(discordClient: Discord.Client, clientId: string, database: Nedb) {
     super(discordClient);
+    this.database = database;
     this.twitchClientId = clientId;
 
-    // TODO: change this to store the clip date in the database
-    this.getTwitchClips()
-      .then(clips => {
-        if (clips.length > 0) {
-          this.lastClipDate = new Date(clips[0].created_at);
-        } else {
-          // there are no clips, set the last clip date to now
-          this.lastClipDate = new Date();
-        }
-        setInterval(this.checkTwitchClips.bind(this), this.twitchClipRefreshRate);
-      })
-      .catch(Shubot.log.error);
+    setInterval(this.checkTwitchClips.bind(this), this.twitchClipRefreshRate);
   }
 
   private getTwitchClips(): Promise<TwitchAPI.Clip[]> {
@@ -53,28 +45,44 @@ export default class twitchNotification extends notificationHandler {
   private checkTwitchClips(): void {
     this.getTwitchClips()
       .then(clips => {
-        const clipstopost: TwitchAPI.Clip[] = [];
-        // check for new clips
-        for (let i = 0; i < clips.length; i++) {
-          // since clips is sorted by date ignore older clips
-          if (new Date(clips[i].created_at).getTime() <= this.lastClipDate.getTime()) {
-            break;
-          } else {
-            Shubot.log.info(`Found Twitch clip: '${clips[i].title}'`);
-            clipstopost.push(clips[i]);
+        this.getLastClipDate().then(lastClipDate => {
+          const clipstopost: TwitchAPI.Clip[] = [];
+          // check for new clips
+          for (let i = 0; i < clips.length; i++) {
+            // since clips is sorted by date ignore older clips
+            if (new Date(clips[i].created_at).getTime() <= lastClipDate.getTime()) {
+              break;
+            } else {
+              Shubot.log.info(`Found Twitch clip: '${clips[i].title}'`);
+              clipstopost.push(clips[i]);
+            }
           }
-        }
-        clipstopost.forEach(clip => {
-          this.sendDiscordMessage(
-            this.discordClipChannelId,
-            `https://clips.twitch.tv/${clip.slug}`,
+          clipstopost.forEach(clip => {
+            this.sendDiscordMessage(
+              this.discordClipChannelId,
+              `https://clips.twitch.tv/${clip.slug}`,
+            );
+          });
+          // store the latest date as the newest clip or the current time if there are no clips
+          this.database.update(
+            { type: this.databaseType, date: lastClipDate.toISOString() },
+            {
+              type: this.databaseType,
+              date: clips.length > 0 ? clips[0].created_at : new Date(),
+            },
+            { upsert: true },
           );
         });
-        // update the latest clip to the newest one
-        if (clips.length > 0) {
-          this.lastClipDate = new Date(clips[0].created_at);
-        }
       })
       .catch(Shubot.log.error);
+  }
+
+  private getLastClipDate(): Promise<Date> {
+    return new Promise((resolve, reject) => {
+      this.database.findOne<lastTwitchClipCheckDate>({ type: this.databaseType }, (err, result) => {
+        reject(err);
+        resolve(result ? new Date(result.date) : new Date());
+      });
+    });
   }
 }

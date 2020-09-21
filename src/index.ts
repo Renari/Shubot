@@ -9,6 +9,7 @@ import anidbHandler from './message-handlers/anidb-handler';
 import customHandler from './message-handlers/custom-handler';
 import messageHandler from './message-handlers/message-handler';
 import pixivHandler from './message-handlers/pixiv-handler';
+import twitchNotification from './notification-handlers/twitch-notification';
 
 export default class Shubot {
   public static readonly version: string = '<version>';
@@ -48,6 +49,15 @@ export default class Shubot {
     // post new twitch clips in discord
     if (process.env.TWITCH_CLIENT_ID) {
       new twitchNotification(this.discordClient, process.env.TWITCH_CLIENT_ID);
+    }
+    // post new youtube videos in discord
+    if (process.env.YOUTUBE_API_KEY && process.env.YOUTUBE_CHANNEL_ID) {
+      new youtubeNotification(
+        this.discordClient,
+        process.env.YOUTUBE_CHANNEL_ID,
+        process.env.YOUTUBE_API_KEY,
+        this.database,
+      );
     }
   }
 

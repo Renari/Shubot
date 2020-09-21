@@ -32,7 +32,7 @@ export default class Shubot {
 
     this.discordClient = new Discord.Client();
 
-    this.discordClient.once('ready', () => this.ready());
+    this.discordClient.once('ready', this.ready.bind(this));
 
     // connect to discord
     this.discordClient.login(process.env.DISCORD_TOKEN).catch(Shubot.log.error);

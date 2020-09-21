@@ -1,8 +1,10 @@
 import axios from 'axios';
 import Discord from 'discord.js';
 import notificationHandler from './notification-handler';
-import { TwitchAPI } from '../interfaces/twitchapi';
 import Shubot from '..';
+
+// interfaces
+import { TwitchAPI } from '../interfaces/twitchapi';
 
 export default class twitchNotification extends notificationHandler {
   private readonly discordClipChannelId: string = '717558882976661636';
@@ -58,7 +60,7 @@ export default class twitchNotification extends notificationHandler {
           if (new Date(clips[i].created_at).getTime() <= this.lastClipDate.getTime()) {
             break;
           } else {
-            Shubot.log.info(`Found '${clips[i].title}'`);
+            Shubot.log.info(`Found Twitch clip: '${clips[i].title}'`);
             clipstopost.push(clips[i]);
           }
         }

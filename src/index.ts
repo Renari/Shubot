@@ -2,14 +2,16 @@ import Discord from 'discord.js';
 import logger from './logger';
 import nedb from 'nedb';
 import path from 'path';
-import youtubeNotification from './notification-handlers/youtube-notification';
 
 // message handlers
 import anidbHandler from './message-handlers/anidb-handler';
 import customHandler from './message-handlers/custom-handler';
 import messageHandler from './message-handlers/message-handler';
 import pixivHandler from './message-handlers/pixiv-handler';
+
+// notification handlers
 import twitchNotification from './notification-handlers/twitch-notification';
+import youtubeNotification from './notification-handlers/youtube-notification';
 
 export default class Shubot {
   public static readonly version: string = '<version>';

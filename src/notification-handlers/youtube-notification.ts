@@ -65,7 +65,7 @@ export default class youtubeNotification extends notificationHandler {
   private getLastVideoDate(): Promise<string | null> {
     return new Promise((resolve, reject) => {
       this.database.findOne<latestYoutubeVideoDate>({ type: this.databaseType }, (err, result) => {
-        reject(err);
+        if (err) reject(err);
         resolve(result ? result.date : null);
       });
     });

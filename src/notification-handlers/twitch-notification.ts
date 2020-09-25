@@ -80,7 +80,7 @@ export default class twitchNotification extends notificationHandler {
   private getLastClipDate(): Promise<Date> {
     return new Promise((resolve, reject) => {
       this.database.findOne<lastTwitchClipCheckDate>({ type: this.databaseType }, (err, result) => {
-        reject(err);
+        if (err) reject(err);
         resolve(result ? new Date(result.date) : new Date());
       });
     });

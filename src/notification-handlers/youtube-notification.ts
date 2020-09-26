@@ -11,7 +11,7 @@ export default class youtubeNotification extends notificationHandler {
   private readonly databaseType = 'latestYoutubeVideoDate';
   private readonly discordChannelId: string = '725449150573051926';
   private readonly youtubeInstance: youtube;
-  private readonly youtubeVideoRefreshRate = 30000;
+  private readonly youtubeVideoRefreshRate = 120000;
 
   constructor(discordClient: Discord.Client, channelId: string, apiKey: string, database: Nedb) {
     super(discordClient);

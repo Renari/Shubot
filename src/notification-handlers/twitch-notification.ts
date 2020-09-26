@@ -68,7 +68,10 @@ export default class twitchNotification extends notificationHandler {
             { type: this.databaseType, date: lastClipDate.toISOString() },
             {
               type: this.databaseType,
-              date: clips.length > 0 ? clips[0].created_at : new Date(),
+              date:
+                clips.length > 0
+                  ? new Date(clips[0].created_at).toISOString()
+                  : new Date().toISOString(),
             },
             { upsert: true },
           );

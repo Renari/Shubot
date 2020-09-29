@@ -10,10 +10,9 @@ export default class notificationHandler {
   }
 
   protected sendDiscordMessage(channelId: string, message: string): void {
-    // post the new clips in discord
     const guild = this.discordClient.guilds.cache.get(this.discordGuildId);
     const channel = guild?.channels.cache.get(channelId);
-    if (channel?.type === 'text') {
+    if (channel?.type === 'text' || channel?.type === 'news') {
       (channel as Discord.TextChannel).send(message).catch(Shubot.log.error);
     } else {
       Shubot.log.error('Unable to find clips channel');

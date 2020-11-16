@@ -17,7 +17,7 @@ export default class customHandler extends messageHandler {
   constructor(discordClient: Discord.Client, database: nedb) {
     super();
     this.database = database;
-    this.database.find<command>({ type: 'customcommand' }, (err, commands) => {
+    this.database.find<command>({ type: 'customcommand' }, (err: Error, commands: command[]) => {
       for (let i = 0; i < commands.length; i++) {
         this.commands.set(commands[i].name, commands[i].response);
       }

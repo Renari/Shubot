@@ -48,6 +48,9 @@ export default class youtubeNotification extends notificationHandler {
                     ? videos.items[i].snippet?.title
                     : video;
                   Shubot.log.info(`Found YouTube video ${title}`);
+                  Shubot.log.info(
+                    `Published At: ${videos.items[0].snippet?.publishedAt}, Previous Date: ${date}`,
+                  );
                   this.sendDiscordMessage(this.discordChannelId, `https://youtu.be/${video}`);
                 }
               }

@@ -7,7 +7,6 @@ import path from 'path';
 import anidbHandler from './message-handlers/anidb-handler';
 import customHandler from './message-handlers/custom-handler';
 import messageHandler from './message-handlers/message-handler';
-import pixivHandler from './message-handlers/pixiv-handler';
 
 // notification handlers
 import twitchNotification from './notification-handlers/twitch-notification';
@@ -44,7 +43,6 @@ export default class Shubot {
     // which message handlers we're loading
     this.messageHandlers.push(new anidbHandler());
     this.messageHandlers.push(new customHandler(this.discordClient, this.database));
-    this.messageHandlers.push(new pixivHandler(this.discordClient));
 
     this.discordClient.on('message', this.messageHandler.bind(this));
 

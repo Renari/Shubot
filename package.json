@@ -16,7 +16,7 @@
     "dateformat": "^3.0.3",
     "discord.js": "^12.4.1",
     "entities": "^2.1.0",
-    "googleapis": "^64.0.0",
+    "googleapis": "^65.0.0",
     "nedb": "^1.8.0",
     "pixiv-app-api": "^1.2.1",
     "xml2js": "^0.4.23"

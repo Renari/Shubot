@@ -40,7 +40,7 @@ export default class youtubeNotification extends notificationHandler {
           this.youtubeInstance.GetVideosAfterDate(date).then(videos => {
             if (videos && videos.items) {
               // post the oldest videos first
-              for (let i = videos.items.length - 1; i >= 0; i--) {
+              for (let i = videos.items.length - 2; i >= 0; i--) {
                 const video = videos.items[i].id?.videoId;
                 if (video && videos.items[0].snippet?.publishedAt != date) {
                   // post new videos to discord

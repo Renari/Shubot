@@ -22,7 +22,7 @@ export default class moderationLogHandler {
         });
       });
     } else {
-      Shubot.log.info('Unable to find moderator log channel, not monitoring.');
+      Shubot.log.error('Unable to find moderator log channel, not monitoring.');
     }
   }
 
@@ -63,22 +63,26 @@ export default class moderationLogHandler {
     if (message.embeds.length > 0) {
       embedDescription = '\nEmbeds:';
       for (let i = 0; i < message.embeds.length; i++) {
-        // we are inserting a zero width space here to prevent closing of the code block
         // noinspection TypeScriptValidateJSTypes
         embedDescription +=
           '\n```json\n' +
-          JSON.stringify(message.embeds[i].toJSON()).replace(/`/g, '`\u200B') +
+          moderationLogHandler.escapeBackticks(JSON.stringify(message.embeds[i].toJSON())) +
           '```';
       }
     }
     return embedDescription;
   }
 
+  private static escapeBackticks(message: string): string {
+    // we are inserting a zero width space here to prevent closing of code blocks
+    return message.replace(/`/g, '`\u200B');
+  }
+
   private messageDelete(message: Discord.Message): void {
     let description =
       'Message by <@' + message.author + '> deleted from <#' + message.channel + '>';
     if (message.content) {
-      description += '```' + message.content + '```';
+      description += '```' + moderationLogHandler.escapeBackticks(message.content) + '```';
     }
     description += moderationLogHandler.processEmbed(message);
     const embed = new Discord.MessageEmbed().setDescription(description).setColor('#E74C3C');
@@ -107,13 +111,13 @@ export default class moderationLogHandler {
       oldMessage.channel +
       '>\nFrom: ';
     if (oldMessage.content) {
-      description += '```' + oldMessage.content + '```';
+      description += '```' + moderationLogHandler.escapeBackticks(oldMessage.content) + '```';
     }
     description += moderationLogHandler.processAttachments(oldMessage);
     description += moderationLogHandler.processEmbeds(oldMessage, newMessage);
     description += '\nTo:';
     if (newMessage.content) {
-      description += '```' + newMessage.content + '```';
+      description += '```' + moderationLogHandler.escapeBackticks(newMessage.content) + '```';
     }
     description += moderationLogHandler.processAttachments(newMessage);
     const embed = new Discord.MessageEmbed().setColor('#FFFF00');

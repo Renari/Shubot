@@ -8,7 +8,7 @@ export default class moderationLogHandler {
   constructor(discordClient: Discord.Client) {
     this.discordClient = discordClient;
     const guild = this.discordClient.guilds.cache.get('717558249435562035');
-    this.channel = guild?.channels.cache.get('717877850237173810');
+    this.channel = guild?.channels.cache.get('830136765850845204');
     if (this.channel) {
       discordClient.on('messageDelete', (message) => {
         this.processMessage(message).then(this.messageDelete.bind(this));

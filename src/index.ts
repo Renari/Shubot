@@ -6,6 +6,7 @@ import path from 'path';
 // message handlers
 import anidbHandler from './message-handlers/anidb-handler';
 import customHandler from './message-handlers/custom-handler';
+import deletionHandler from './message-handlers/deletion-handler';
 import messageHandler from './message-handlers/message-handler';
 
 // notification handlers
@@ -45,6 +46,9 @@ export default class Shubot {
     this.messageHandlers.push(new customHandler(this.database));
 
     this.discordClient.on('message', this.messageHandler.bind(this));
+
+    // handle message deletion
+    new deletionHandler(this.discordClient);
 
     // post new twitch clips in discord
     if (process.env.TWITCH_CLIENT_ID) {

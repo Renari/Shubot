@@ -1,4 +1,4 @@
-import Discord, { MessageAttachment } from "discord.js";
+import Discord, { MessageAttachment } from 'discord.js';
 import Shubot from '..';
 
 export default class moderationLogHandler {

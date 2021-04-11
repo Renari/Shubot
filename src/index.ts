@@ -42,7 +42,7 @@ export default class Shubot {
 
     // which message handlers we're loading
     this.messageHandlers.push(new anidbHandler());
-    this.messageHandlers.push(new customHandler(this.discordClient, this.database));
+    this.messageHandlers.push(new customHandler(this.database));
 
     this.discordClient.on('message', this.messageHandler.bind(this));
 

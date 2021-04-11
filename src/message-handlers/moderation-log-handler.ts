@@ -74,7 +74,17 @@ export default class moderationLogHandler {
 
   private messageEdit(oldMessage: Discord.Message, newMessage: Discord.Message): void {
     let description =
-      'Message by <@' + oldMessage.author + '> edited in <#' + oldMessage.channel + '>\nFrom: ';
+      '[Message](https://discord.com/channels/' +
+      this.guildId +
+      '/' +
+      oldMessage.channel.id +
+      '/' +
+      oldMessage.id +
+      ') by <@' +
+      oldMessage.author +
+      '> edited in <#' +
+      oldMessage.channel +
+      '>\nFrom: ';
     if (oldMessage.content) {
       description += '```' + oldMessage.content + '```';
     }

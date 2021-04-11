@@ -116,12 +116,13 @@ export default class moderationLogHandler {
       description += '```' + newMessage.content + '```';
     }
     description += moderationLogHandler.processAttachments(newMessage);
-    const embed = new Discord.MessageEmbed().setDescription(description).setColor('#FFFF00');
-    if (description.length < 2048) {
-      (this.channel as Discord.TextChannel).send(embed).catch(Shubot.log.error);
-    } else {
+    const embed = new Discord.MessageEmbed().setColor('#FFFF00');
+    if (description.length > 2048) {
       embed.setDescription('Maximum message length exceeded, attaching as file.');
       embed.attachFiles([new MessageAttachment(new Buffer(description), 'messagedata.txt')]);
+    } else {
+      embed.setDescription(description);
     }
+    (this.channel as Discord.TextChannel).send(embed).catch(Shubot.log.error);
   }
 }

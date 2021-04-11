@@ -90,7 +90,7 @@ export default class moderationLogHandler {
     if (
       oldMessage.content == newMessage.content &&
       oldMessage.attachments.size == newMessage.attachments.size &&
-      oldMessage.embeds.length < newMessage.attachments.size
+      oldMessage.embeds.length <= newMessage.embeds.length
     )
       return;
 

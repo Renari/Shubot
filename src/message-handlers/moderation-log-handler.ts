@@ -4,10 +4,11 @@ import Shubot from '..';
 export default class moderationLogHandler {
   private readonly discordClient;
   private readonly channel;
+  private readonly guildId = '717558249435562035';
 
   constructor(discordClient: Discord.Client) {
     this.discordClient = discordClient;
-    const guild = this.discordClient.guilds.cache.get('717558249435562035');
+    const guild = this.discordClient.guilds.cache.get(this.guildId);
     this.channel = guild?.channels.cache.get('830136765850845204');
     if (this.channel) {
       discordClient.on('messageDelete', (message) => {
@@ -83,7 +84,6 @@ export default class moderationLogHandler {
       description += '```' + newMessage.content + '```';
     }
     description += moderationLogHandler.processExtras(newMessage);
-    Shubot.log.info(description);
     const embed = new Discord.MessageEmbed().setDescription(description).setColor('#FFFF00');
     (this.channel as Discord.TextChannel).send(embed).catch(Shubot.log.error);
   }

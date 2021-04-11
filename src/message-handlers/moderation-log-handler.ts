@@ -40,25 +40,38 @@ export default class moderationLogHandler {
     });
   }
 
-  private static processExtras(message: Discord.Message): string {
-    let extrasDescription = '';
+  private static processAttachments(message: Discord.Message): string {
+    let attachmentsDescription = '';
     if (message.attachments.size > 0) {
-      extrasDescription += '\nAttachments:';
+      attachmentsDescription = '\nAttachments:';
       for (const [, attachment] of message.attachments) {
-        extrasDescription += `\n${attachment.url}`;
+        attachmentsDescription += `\n${attachment.url}`;
       }
     }
+    return attachmentsDescription;
+  }
+
+  private static processEmbeds(oldMessage: Discord.Message, newMessage: Discord.Message): string {
+    if (oldMessage.embeds.length > newMessage.embeds.length) {
+      return this.processEmbed(oldMessage);
+    }
+    return '';
+  }
+
+  private static processEmbed(message: Discord.Message): string {
+    let embedDescription = '';
     if (message.embeds.length > 0) {
-      extrasDescription += '\nEmbeds:';
+      embedDescription = '\nEmbeds:';
       for (let i = 0; i < message.embeds.length; i++) {
         // we are inserting a zero width space here to prevent closing of the code block
-        extrasDescription +=
+        // noinspection TypeScriptValidateJSTypes
+        embedDescription +=
           '\n```json\n' +
           JSON.stringify(message.embeds[i].toJSON()).replace(/`/g, '`\u200B') +
           '```';
       }
     }
-    return extrasDescription;
+    return embedDescription;
   }
 
   private messageDelete(message: Discord.Message): void {
@@ -67,12 +80,20 @@ export default class moderationLogHandler {
     if (message.content) {
       description += '```' + message.content + '```';
     }
-    description += moderationLogHandler.processExtras(message);
+    description += moderationLogHandler.processEmbed(message);
     const embed = new Discord.MessageEmbed().setDescription(description).setColor('#E74C3C');
     (this.channel as Discord.TextChannel).send(embed).catch(Shubot.log.error);
   }
 
   private messageEdit(oldMessage: Discord.Message, newMessage: Discord.Message): void {
+    // ignore messages that only have embeds added
+    if (
+      oldMessage.content == newMessage.content &&
+      oldMessage.attachments.size == newMessage.attachments.size &&
+      oldMessage.embeds.length < newMessage.attachments.size
+    )
+      return;
+
     let description =
       '[Message](https://discord.com/channels/' +
       this.guildId +
@@ -88,12 +109,13 @@ export default class moderationLogHandler {
     if (oldMessage.content) {
       description += '```' + oldMessage.content + '```';
     }
-    description += moderationLogHandler.processExtras(oldMessage);
+    description += moderationLogHandler.processAttachments(oldMessage);
+    description += moderationLogHandler.processEmbeds(oldMessage, newMessage);
     description += '\nTo:';
     if (newMessage.content) {
       description += '```' + newMessage.content + '```';
     }
-    description += moderationLogHandler.processExtras(newMessage);
+    description += moderationLogHandler.processAttachments(newMessage);
     const embed = new Discord.MessageEmbed().setDescription(description).setColor('#FFFF00');
     (this.channel as Discord.TextChannel).send(embed).catch(Shubot.log.error);
   }

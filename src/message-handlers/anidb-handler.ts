@@ -13,10 +13,10 @@ export default class anidbHandler extends messageHandler {
 
   handle(message: Discord.Message): void {
     const anidbAnimeMatches = this.match(message.content);
-    anidbAnimeMatches.forEach(match => {
+    anidbAnimeMatches.forEach((match) => {
       this.anidbClient
         .getShowData(match[1])
-        .then(data => {
+        .then((data) => {
           return message.channel.send(anidb.generateDiscordEmbed(data.anime));
         })
         .catch(SaberAlter.log.error);

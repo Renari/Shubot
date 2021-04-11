@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "ts-node-dev -P tsconfig.json --respawn --transpile-only -r dotenv/config -- src/index.ts",
-    "lint": "eslint --fix ./**/*.ts",
+    "lint": "eslint --ignore-path .gitignore --fix ./**/*.ts",
     "build": "tsc -p tsconfig.json"
   },
   "author": "Arimil",

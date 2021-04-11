@@ -30,7 +30,7 @@ export default class twitchNotification extends notificationHandler {
           'Client-ID': this.twitchClientId,
         },
       })
-      .then(res => {
+      .then((res) => {
         // sort the clips by date
         const clips: TwitchAPI.Clip[] = res.data.clips || [];
         clips.sort((first, second) => {
@@ -44,8 +44,8 @@ export default class twitchNotification extends notificationHandler {
 
   private checkTwitchClips(): void {
     this.getTwitchClips()
-      .then(clips => {
-        this.getLastClipDate().then(lastClipDate => {
+      .then((clips) => {
+        this.getLastClipDate().then((lastClipDate) => {
           const clipstopost: TwitchAPI.Clip[] = [];
           // check for new clips
           for (let i = 0; i < clips.length; i++) {
@@ -57,7 +57,7 @@ export default class twitchNotification extends notificationHandler {
               clipstopost.push(clips[i]);
             }
           }
-          clipstopost.forEach(clip => {
+          clipstopost.forEach((clip) => {
             this.sendDiscordMessage(
               this.discordClipChannelId,
               `https://clips.twitch.tv/${clip.slug}`,

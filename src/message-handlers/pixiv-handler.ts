@@ -27,7 +27,7 @@ export default class pixivHandler extends messageHandler {
     if (newMessage.partial) {
       newMessage
         .fetch()
-        .then(fullMessage => {
+        .then((fullMessage) => {
           pixivHandler.embedChecker(fullMessage);
         })
         .catch(Shubot.log.error);
@@ -47,7 +47,7 @@ export default class pixivHandler extends messageHandler {
         /https?:\/\/(?:www\.)?pixiv.net\/(?:\w+\/)*artworks\/(\d+)/gi,
       );
       if (match) {
-        message.suppressEmbeds().catch(err => Shubot.log.error(err));
+        message.suppressEmbeds().catch((err) => Shubot.log.error(err));
       }
     }
   }
@@ -77,10 +77,10 @@ export default class pixivHandler extends messageHandler {
        */
       message.suppressEmbeds().catch(Shubot.log.error);
     }
-    pixivIllustMatches.forEach(match => {
+    pixivIllustMatches.forEach((match) => {
       this.pixivClient
         .getImageDetail(parseInt(match[1]))
-        .then(imageMetadata => {
+        .then((imageMetadata) => {
           const imageUrl = imageMetadata.illust.imageUrls.large
             ? imageMetadata.illust.imageUrls.large
             : imageMetadata.illust.imageUrls.medium;
@@ -88,8 +88,8 @@ export default class pixivHandler extends messageHandler {
           if (extensionMatch === null || extensionMatch.length !== 1)
             throw 'Failed to get extension for url ' + imageUrl;
           const fileName = match[1] + extensionMatch[0];
-          this.pixivClient.getImage(imageMetadata).then(imageData => {
-            return this.pixivClient.getAvatar(imageMetadata).then(avatar => {
+          this.pixivClient.getImage(imageMetadata).then((imageData) => {
+            return this.pixivClient.getAvatar(imageMetadata).then((avatar) => {
               const description = pixivHandler.descriptionFormatter(imageMetadata.illust.caption);
               const embed = new Discord.MessageEmbed()
                 .setTitle(imageMetadata.illust.title)

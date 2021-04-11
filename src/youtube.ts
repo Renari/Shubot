@@ -23,7 +23,7 @@ export default class youtube {
         publishedAfter: date,
         key: this.apiKey,
       })
-      .then(response => {
+      .then((response) => {
         return response.data;
       })
       .catch(Shubot.log.error);
@@ -39,7 +39,7 @@ export default class youtube {
         type: ['video'],
         key: this.apiKey,
       })
-      .then(response => {
+      .then((response) => {
         if (response.data.items && response.data.items.length > 0) {
           return response.data.items[0].snippet?.publishedAt;
         } else {

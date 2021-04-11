@@ -65,7 +65,7 @@ export default class Shubot {
     // ignore own messages
     if (this.discordClient.user && message.author.equals(this.discordClient.user)) return;
     // run the message through each message handler
-    this.messageHandlers.forEach(handler => {
+    this.messageHandlers.forEach((handler) => {
       handler.handle(message);
     });
   }

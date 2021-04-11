@@ -22,10 +22,10 @@ export default class youtubeNotification extends notificationHandler {
 
   private checkForNewYoutubeVideos(): void {
     this.getLastVideoDate()
-      .then(date => {
+      .then((date) => {
         if (!date) {
           // we've never got a youtube video before, try to get the latest one
-          this.youtubeInstance.GetLatestVideoDate().then(date => {
+          this.youtubeInstance.GetLatestVideoDate().then((date) => {
             if (date) {
               // store this date in the database
               this.database.update(
@@ -37,7 +37,7 @@ export default class youtubeNotification extends notificationHandler {
           });
         } else {
           // check for newer videos
-          this.youtubeInstance.GetVideosAfterDate(date).then(videos => {
+          this.youtubeInstance.GetVideosAfterDate(date).then((videos) => {
             if (videos && videos.items) {
               // post the oldest videos first
               for (let i = videos.items.length - 1; i >= 0; i--) {

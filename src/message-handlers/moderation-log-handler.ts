@@ -84,6 +84,7 @@ export default class moderationLogHandler {
     if (message.content) {
       description += '```' + moderationLogHandler.escapeBackticks(message.content) + '```';
     }
+    description += moderationLogHandler.processAttachments(message);
     description += moderationLogHandler.processEmbed(message);
     const embed = new Discord.MessageEmbed().setDescription(description).setColor('#E74C3C');
     (this.channel as Discord.TextChannel).send(embed).catch(Shubot.log.error);

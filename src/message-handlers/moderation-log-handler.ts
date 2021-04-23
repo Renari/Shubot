@@ -81,8 +81,8 @@ export default class moderationLogHandler {
   private messageDelete(message: Discord.Message): void {
     let description =
       'Message by <@' + message.author + '> deleted from <#' + message.channel + '>';
-    if (message.content) {
-      description += '```' + moderationLogHandler.escapeBackticks(message.content) + '```';
+    if (message.cleanContent) {
+      description += '```' + moderationLogHandler.escapeBackticks(message.cleanContent) + '```';
     }
     description += moderationLogHandler.processAttachments(message);
     description += moderationLogHandler.processEmbed(message);
@@ -111,14 +111,14 @@ export default class moderationLogHandler {
       '> edited in <#' +
       oldMessage.channel +
       '>\nFrom: ';
-    if (oldMessage.content) {
-      description += '```' + moderationLogHandler.escapeBackticks(oldMessage.content) + '```';
+    if (oldMessage.cleanContent) {
+      description += '```' + moderationLogHandler.escapeBackticks(oldMessage.cleanContent) + '```';
     }
     description += moderationLogHandler.processAttachments(oldMessage);
     description += moderationLogHandler.processEmbeds(oldMessage, newMessage);
     description += '\nTo:';
-    if (newMessage.content) {
-      description += '```' + moderationLogHandler.escapeBackticks(newMessage.content) + '```';
+    if (newMessage.cleanContent) {
+      description += '```' + moderationLogHandler.escapeBackticks(newMessage.cleanContent) + '```';
     }
     description += moderationLogHandler.processAttachments(newMessage);
     const embed = new Discord.MessageEmbed().setColor('#FFFF00');

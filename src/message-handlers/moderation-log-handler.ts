@@ -124,10 +124,14 @@ export default class moderationLogHandler {
     const embed = new Discord.MessageEmbed().setColor('#FFFF00');
     if (description.length > 2048) {
       embed.setDescription('Maximum message length exceeded, attaching as file.');
-      embed.attachFiles([new MessageAttachment(new Buffer(description), 'messagedata.txt')]);
     } else {
       embed.setDescription(description);
     }
-    (this.channel as Discord.TextChannel).send(embed).catch(Shubot.log.error);
+    (this.channel as Discord.TextChannel)
+      .send({
+        embeds: [embed],
+        files: [new MessageAttachment(new Buffer(description), 'messagedata.txt')],
+      })
+      .catch(Shubot.log.error);
   }
 }

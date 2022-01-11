@@ -87,7 +87,7 @@ export default class moderationLogHandler {
     description += moderationLogHandler.processAttachments(message);
     description += moderationLogHandler.processEmbed(message);
     const embed = new Discord.MessageEmbed().setDescription(description).setColor('#E74C3C');
-    (this.channel as Discord.TextChannel).send(embed).catch(Shubot.log.error);
+    (this.channel as Discord.TextChannel).send({ embeds: [embed] }).catch(Shubot.log.error);
   }
 
   private messageEdit(oldMessage: Discord.Message, newMessage: Discord.Message): void {

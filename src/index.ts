@@ -1,7 +1,6 @@
-import Discord from 'discord.js';
+import Database from 'better-sqlite3';
+import Discord, { ClientOptions, Intents } from 'discord.js';
 import logger from './logger';
-import nedb from 'nedb';
-import path from 'path';
 
 // message handlers
 import anidbHandler from './message-handlers/anidb-handler';
@@ -15,9 +14,15 @@ import youtubeNotification from './notification-handlers/youtube-notification';
 
 export default class Shubot {
   public static readonly version: string = '<version>';
-  private readonly discordClient: Discord.Client;
+  public readonly database: Database.Database = new Database('database.db', {});
+  public readonly discordClient: Discord.Client = new Discord.Client({
+    intents: [
+      Intents.FLAGS.GUILDS,
+      Intents.FLAGS.GUILD_MESSAGES,
+      Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+    ],
+  } as ClientOptions);
   private readonly messageHandlers: messageHandler[] = [];
-  private readonly database: nedb;
 
   public static readonly log = logger({
     timestamp: 'mm/dd/yy HH:MM:ss',
@@ -25,17 +30,12 @@ export default class Shubot {
   });
 
   constructor() {
-    this.database = new nedb({
-      filename: path.resolve('database.db'),
-      autoload: true,
-    });
-
-    this.discordClient = new Discord.Client();
-
     this.discordClient.once('ready', this.ready.bind(this));
 
     // connect to discord
-    this.discordClient.login(process.env.DISCORD_TOKEN).catch(Shubot.log.error);
+    if (process.env.DISCORD_TOKEN) {
+      this.discordClient.login(process.env.DISCORD_TOKEN).catch(Shubot.log.error);
+    }
   }
 
   private ready(): void {
@@ -51,8 +51,13 @@ export default class Shubot {
     new moderationLogHandler(this.discordClient);
 
     // post new twitch clips in discord
-    if (process.env.TWITCH_CLIENT_ID) {
-      new twitchNotification(this.discordClient, process.env.TWITCH_CLIENT_ID, this.database);
+    if (process.env.TWITCH_CLIENT_ID && process.env.TWITCH_APP_ACCESS_TOKEN) {
+      new twitchNotification(
+        this.discordClient,
+        process.env.TWITCH_CLIENT_ID,
+        process.env.TWITCH_APP_ACCESS_TOKEN,
+        this.database,
+      );
     }
     // post new youtube videos in discord
     if (process.env.YOUTUBE_API_KEY && process.env.YOUTUBE_CHANNEL_ID) {

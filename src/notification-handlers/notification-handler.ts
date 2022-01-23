@@ -12,7 +12,7 @@ export default class notificationHandler {
   protected sendDiscordMessage(channelId: string, message: string): void {
     const guild = this.discordClient.guilds.cache.get(this.discordGuildId);
     const channel = guild?.channels.cache.get(channelId);
-    if (channel?.type === 'text' || channel?.type === 'news') {
+    if (channel?.type === 'GUILD_TEXT' || channel?.type === 'GUILD_NEWS') {
       (channel as Discord.TextChannel).send(message).catch(Shubot.log.error);
     } else {
       Shubot.log.error('Unable to find clips channel');

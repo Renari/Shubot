@@ -275,11 +275,11 @@ export default class anidb {
   public static generateDiscordEmbed(anime: Anime): Discord.MessageEmbed {
     return new Discord.MessageEmbed()
       .setTitle(anime.titles[0].title[0]._)
-      .setAuthor(
-        anime.url ? anime.url[0] : '',
-        'https://cdn.anidb.net/css/icons/touch/favicon-32x32.png',
-        anime.url ? anime.url[0] : undefined,
-      )
+      .setAuthor({
+        name: anime.url ? anime.url[0] : '',
+        url: anime.url ? anime.url[0] : undefined,
+        iconURL: 'https://cdn.anidb.net/css/icons/touch/favicon-32x32.png',
+      })
       .setDescription(anidb.formatDiscordMessage(anime.description[0]))
       .setThumbnail('https://cdn.anidb.net/images/main/' + anime.picture)
       .setURL('https://anidb.net/anime/' + anime.$.id)

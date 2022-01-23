@@ -17,7 +17,9 @@ export default class anidbHandler extends messageHandler {
       this.anidbClient
         .getShowData(match[1])
         .then((data) => {
-          return message.channel.send(anidb.generateDiscordEmbed(data.anime));
+          return message.reply({
+            embeds: [anidb.generateDiscordEmbed(data.anime)],
+          });
         })
         .catch(SaberAlter.log.error);
     });

@@ -92,7 +92,7 @@ export default class twitchNotification extends notificationHandler {
         clips.forEach((clip) => {
           this.sendDiscordMessage(
             this.discordClipChannelId,
-            `https://clips.twitch.tv/${clip.slug}`,
+            clip.url,
           );
         });
         // update the last time we checked for clips

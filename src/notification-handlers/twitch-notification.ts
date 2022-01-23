@@ -48,6 +48,16 @@ export default class twitchNotification extends notificationHandler {
     setInterval(this.checkTwitchClips.bind(this), this.twitchClipRefreshRate);
   }
 
+  private upsertDate(): void {
+    this.lastCheckDate = new Date();
+    this.database
+      .prepare(`UPDATE ${this.databaseTableName} SET date = ?;`)
+      .run(this.lastCheckDate.toISOString());
+    this.database
+      .prepare(`INSERT INTO ${this.databaseTableName} (date) SELECT ? WHERE (SELECT Changes() = 0)`)
+      .run(this.lastCheckDate.toISOString());
+  }
+
   private getTwitchClipsAfter(date: Date): Promise<TwitchAPI.Clip[]> {
     return axios
       .get(
@@ -62,7 +72,7 @@ export default class twitchNotification extends notificationHandler {
       )
       .then((res) => {
         // sort the clips by date
-        const clips: TwitchAPI.Clip[] = res.data || [];
+        const clips: TwitchAPI.Clip[] = res.data.data || [];
         clips.sort((first, second) => {
           const firstDate = new Date(first.created_at).getTime();
           const secondDate = new Date(second.created_at).getTime();
@@ -86,7 +96,7 @@ export default class twitchNotification extends notificationHandler {
           );
         });
         // update the last time we checked for clips
-        this.lastCheckDate = new Date();
+        this.upsertDate();
       })
       .catch(Shubot.log.error);
   }

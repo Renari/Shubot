@@ -45,7 +45,7 @@ export default class Shubot {
     this.messageHandlers.push(new anidbHandler());
     this.messageHandlers.push(new customHandler(this.database));
 
-    this.discordClient.on('message', this.messageHandler.bind(this));
+    this.discordClient.on('messageCreate', this.messageHandler.bind(this));
 
     // handle message deletion
     new moderationLogHandler(this.discordClient);

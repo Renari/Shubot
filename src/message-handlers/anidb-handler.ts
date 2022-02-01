@@ -1,7 +1,7 @@
 import anidb from '../anidb';
 import Discord from 'discord.js';
 import messageHandler from './message-handler';
-import SaberAlter from '../index';
+import Shubot from '../index';
 
 export default class anidbHandler extends messageHandler {
   private readonly anidbClient: anidb;
@@ -21,7 +21,7 @@ export default class anidbHandler extends messageHandler {
             embeds: [anidb.generateDiscordEmbed(data.anime)],
           });
         })
-        .catch(SaberAlter.log.error);
+        .catch(Shubot.log.error);
     });
   }
 

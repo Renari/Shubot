@@ -15,7 +15,7 @@
     "better-sqlite3": "^7.5.0",
     "dateformat": "^5.0.3",
     "discord.js": "^13.6.0",
-    "entities": "^3.0.1",
+    "entities": "^4.1.1",
     "googleapis": "^100.0.0",
     "xml2js": "^0.4.23"
   },

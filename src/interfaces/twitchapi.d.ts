@@ -29,20 +29,20 @@ export declare namespace TwitchAPI {
   }
 
   export interface Clip {
-    id:               string;
-    url:              string;
-    embed_url:        string;
-    broadcaster_id:   string;
+    id: string;
+    url: string;
+    embed_url: string;
+    broadcaster_id: string;
     broadcaster_name: string;
-    creator_id:       string;
-    creator_name:     string;
-    video_id:         string;
-    game_id:          string;
-    language:         string;
-    title:            string;
-    view_count:       number;
-    created_at:       Date;
-    thumbnail_url:    string;
-    duration:         number;
+    creator_id: string;
+    creator_name: string;
+    video_id: string;
+    game_id: string;
+    language: string;
+    title: string;
+    view_count: number;
+    created_at: Date;
+    thumbnail_url: string;
+    duration: number;
   }
 }

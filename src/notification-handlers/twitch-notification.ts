@@ -11,7 +11,10 @@ export default class twitchNotification extends notificationHandler {
   private readonly database: Database;
   private readonly databaseTableName = 'lastTwitchClipCheckDate';
   private readonly discordClipChannelId: string = '717558882976661636';
-  private readonly twitchAccessToken: string;
+  private readonly twitchChannels = [
+    26640321, // Leaflit
+    780426582, // Angel's Sword Guild
+  ];
   private readonly twitchClientId: string;
   private readonly twitchClipRefreshRate = 30000;
   private readonly twitchClientSecret: string;
@@ -88,10 +91,10 @@ export default class twitchNotification extends notificationHandler {
       .run(this.lastCheckDate.toISOString());
   }
 
-  private getTwitchClipsAfter(date: Date): Promise<TwitchAPI.Clip[]> {
+  private getTwitchClipsAfter(date: Date, broadcaster: string): Promise<TwitchAPI.Clip[]> {
     return axios
       .get(
-        `https://api.twitch.tv/helix/clips?broadcaster_id=26640321&started_at=${date.toISOString()}&ended_at=${new Date().toISOString()}`,
+        `https://api.twitch.tv/helix/clips?broadcaster_id=${broadcaster}&started_at=${date.toISOString()}&ended_at=${new Date().toISOString()}`,
         {
           headers: {
             Accept: 'application/vnd.twitchtv.v5+json',
@@ -127,19 +130,21 @@ export default class twitchNotification extends notificationHandler {
         });
       })
       .then(() => {
-        this.getTwitchClipsAfter(this.lastCheckDate).then((clips) => {
-          // check for new clips
-          for (let i = 0; i < clips.length; i++) {
-            Shubot.log.info(
-              `Acquired Twitch clip from ${clips[i].broadcaster_name} '${clips[i].title}' ${clips[i].url}`,
-            );
-          }
-          clips.forEach((clip) => {
-            this.sendDiscordMessage(this.discordClipChannelId, clip.url);
+        for (const broadcaster in this.twitchChannels) {
+          this.getTwitchClipsAfter(this.lastCheckDate, broadcaster).then((clips) => {
+            // check for new clips
+            for (let i = 0; i < clips.length; i++) {
+              Shubot.log.info(
+                `Acquired Twitch clip from ${clips[i].broadcaster_name} '${clips[i].title}' ${clips[i].url}`,
+              );
+            }
+            clips.forEach((clip) => {
+              this.sendDiscordMessage(this.discordClipChannelId, clip.url);
+            });
+            // update the last time we checked for clips
+            this.upsertDate();
           });
-          // update the last time we checked for clips
-          this.upsertDate();
-        });
+        }
       })
       .catch(Shubot.log.error);
   }

@@ -14,19 +14,23 @@ export default class twitchNotification extends notificationHandler {
   private readonly twitchAccessToken: string;
   private readonly twitchClientId: string;
   private readonly twitchClipRefreshRate = 30000;
+  private readonly twitchClientSecret: string;
 
   private lastCheckDate: Date;
+  private twitchAccessToken: string | undefined;
 
   constructor(
     discordClient: Discord.Client,
     clientId: string,
-    accessToken: string,
+    clientSecret: string,
     database: Database,
   ) {
     super(discordClient);
     this.database = database;
     this.twitchClientId = clientId;
-    this.twitchAccessToken = accessToken;
+    this.twitchClientSecret = clientSecret;
+
+    this.getTwitchAccessToken().catch(Shubot.log.error);
 
     // make sure our database table exists
     database
@@ -46,6 +50,32 @@ export default class twitchNotification extends notificationHandler {
     this.lastCheckDate = row && row.date ? new Date(row.date) : new Date();
 
     setInterval(this.checkTwitchClips.bind(this), this.twitchClipRefreshRate);
+  }
+
+  private validateTwitchAccessToken(): Promise<boolean> {
+    return axios
+      .get('https://id.twitch.tv/oauth2/validate', {
+        headers: {
+          Authorization: `OAuth ${this.twitchAccessToken}`,
+        },
+      })
+      .then((res) => {
+        return res.status === 200;
+      });
+  }
+
+  private getTwitchAccessToken(): Promise<boolean> {
+    return axios
+      .post('https://id.twitch.tv/oauth2/token', {
+        client_id: this.twitchClientId,
+        client_secret: this.twitchClientSecret,
+        grant_type: 'client_credentials',
+      })
+      .then((res) => {
+        if (res.status !== 200) return false;
+        this.twitchAccessToken = res.data.access_token;
+        return true;
+      });
   }
 
   private upsertDate(): void {
@@ -83,20 +113,33 @@ export default class twitchNotification extends notificationHandler {
   }
 
   private checkTwitchClips(): void {
-    this.getTwitchClipsAfter(this.lastCheckDate)
-      .then((clips) => {
-        // check for new clips
-        for (let i = 0; i < clips.length; i++) {
-          Shubot.log.info(`Found Twitch clip: '${clips[i].title}'`);
-        }
-        clips.forEach((clip) => {
-          this.sendDiscordMessage(
-            this.discordClipChannelId,
-            clip.url,
-          );
+    this.validateTwitchAccessToken()
+      .then((valid) => {
+        return new Promise<void>((resolve, reject) => {
+          if (valid) resolve();
+          this.getTwitchAccessToken().then((acquiredToken) => {
+            if (acquiredToken) {
+              resolve();
+            } else {
+              reject('Unable to acquire access token');
+            }
+          });
         });
-        // update the last time we checked for clips
-        this.upsertDate();
+      })
+      .then(() => {
+        this.getTwitchClipsAfter(this.lastCheckDate).then((clips) => {
+          // check for new clips
+          for (let i = 0; i < clips.length; i++) {
+            Shubot.log.info(
+              `Acquired Twitch clip from ${clips[i].broadcaster_name} '${clips[i].title}' ${clips[i].url}`,
+            );
+          }
+          clips.forEach((clip) => {
+            this.sendDiscordMessage(this.discordClipChannelId, clip.url);
+          });
+          // update the last time we checked for clips
+          this.upsertDate();
+        });
       })
       .catch(Shubot.log.error);
   }

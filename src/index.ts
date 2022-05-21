@@ -51,11 +51,11 @@ export default class Shubot {
     new moderationLogHandler(this.discordClient);
 
     // post new twitch clips in discord
-    if (process.env.TWITCH_CLIENT_ID && process.env.TWITCH_APP_ACCESS_TOKEN) {
+    if (process.env.TWITCH_CLIENT_ID && process.env.TWITCH_CLIENT_SECRET) {
       new twitchNotification(
         this.discordClient,
         process.env.TWITCH_CLIENT_ID,
-        process.env.TWITCH_APP_ACCESS_TOKEN,
+        process.env.TWITCH_CLIENT_SECRET,
         this.database,
       );
     }

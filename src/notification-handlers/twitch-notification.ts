@@ -130,22 +130,20 @@ export default class twitchNotification extends notificationHandler {
         });
       })
       .then(() => {
-        for (const broadcaster in this.twitchChannels) {
-          this.getTwitchClipsAfter(this.lastCheckDate, this.twitchChannels[broadcaster]).then(
-            (clips) => {
-              // check for new clips
-              for (let i = 0; i < clips.length; i++) {
-                Shubot.log.info(
-                  `Acquired Twitch clip from ${clips[i].broadcaster_name} '${clips[i].title}' ${clips[i].url}`,
-                );
-              }
-              clips.forEach((clip) => {
-                this.sendDiscordMessage(this.discordClipChannelId, clip.url);
-              });
-              // update the last time we checked for clips
-              this.upsertDate();
-            },
-          );
+        for (const broadcaster of this.twitchChannels) {
+          this.getTwitchClipsAfter(this.lastCheckDate, broadcaster).then((clips) => {
+            // check for new clips
+            for (let i = 0; i < clips.length; i++) {
+              Shubot.log.info(
+                `Acquired Twitch clip from ${clips[i].broadcaster_name} '${clips[i].title}' ${clips[i].url}`,
+              );
+            }
+            clips.forEach((clip) => {
+              this.sendDiscordMessage(this.discordClipChannelId, clip.url);
+            });
+            // update the last time we checked for clips
+            this.upsertDate();
+          });
         }
       })
       .catch(Shubot.log.error);

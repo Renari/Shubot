@@ -184,7 +184,8 @@ export interface Tentacled {
 }
 
 export default class anidb {
-  public static readonly animeUrlRegex: RegExp = /https?:\/\/(?:www\.)?anidb\.net\/a(?:nime\/)?(\d+)/gi;
+  public static readonly animeUrlRegex: RegExp =
+    /https?:\/\/(?:www\.)?anidb\.net\/a(?:nime\/)?(\d+)/gi;
   private readonly baseUrl: string = util.format(
     'http://api.anidb.net:9001/httpapi?client=%s&clientver=%s&protover=1',
     process.env.ANIDB_CLIENT,

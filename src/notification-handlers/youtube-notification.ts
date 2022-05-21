@@ -4,9 +4,6 @@ import notificationHandler from './notification-handler';
 import Shubot from '..';
 import youtube from '../youtube';
 
-// interfaces
-import latestYoutubeVideoDate from '../interfaces/latestYoutubeVideoDate';
-
 export default class youtubeNotification extends notificationHandler {
   private readonly database: Database;
   private readonly databaseTableName = 'latestYoutubeVideoDate';

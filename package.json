@@ -13,7 +13,7 @@
     "async-mutex": "^0.3.2",
     "axios": "^0.27.2",
     "better-sqlite3": "^7.5.3",
-    "dateformat": "^5.0.3",
+    "dateformat": "4.6.3",
     "discord.js": "^13.7.0",
     "entities": "^4.3.0",
     "googleapis": "^100.0.0",

@@ -1,4 +1,4 @@
-import Discord, { MessageAttachment } from 'discord.js';
+import Discord, { AttachmentBuilder } from 'discord.js';
 import Shubot from '..';
 
 export default class moderationLogHandler {
@@ -86,7 +86,7 @@ export default class moderationLogHandler {
     }
     description += moderationLogHandler.processAttachments(message);
     description += moderationLogHandler.processEmbed(message);
-    const embed = new Discord.MessageEmbed().setDescription(description).setColor('#E74C3C');
+    const embed = new Discord.EmbedBuilder().setDescription(description).setColor('#E74C3C');
     (this.channel as Discord.TextChannel).send({ embeds: [embed] }).catch(Shubot.log.error);
   }
 
@@ -121,7 +121,7 @@ export default class moderationLogHandler {
       description += '```' + moderationLogHandler.escapeBackticks(newMessage.cleanContent) + '```';
     }
     description += moderationLogHandler.processAttachments(newMessage);
-    const embed = new Discord.MessageEmbed().setColor('#FFFF00');
+    const embed = new Discord.EmbedBuilder().setColor('#FFFF00');
     if (description.length > 2048) {
       embed.setDescription('Maximum message length exceeded, attaching as file.');
     } else {
@@ -130,7 +130,7 @@ export default class moderationLogHandler {
     (this.channel as Discord.TextChannel)
       .send({
         embeds: [embed],
-        files: [new MessageAttachment(new Buffer(description), 'messagedata.txt')],
+        files: [new AttachmentBuilder(new Buffer(description)).setName('messagedata.txt')],
       })
       .catch(Shubot.log.error);
   }

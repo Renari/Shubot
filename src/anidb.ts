@@ -5,7 +5,7 @@ import { default as axios, AxiosResponse } from 'axios';
 import { Mutex } from 'async-mutex';
 import xml2js from 'xml2js';
 import SaberAlter from './index';
-import Discord from 'discord.js';
+import Discord, { EmbedBuilder } from 'discord.js';
 
 export interface AnimeResponse {
   anime: Anime;
@@ -273,8 +273,8 @@ export default class anidb {
     return message;
   }
 
-  public static generateDiscordEmbed(anime: Anime): Discord.MessageEmbed {
-    return new Discord.MessageEmbed()
+  public static generateDiscordEmbed(anime: Anime): Discord.EmbedBuilder {
+    return new EmbedBuilder()
       .setTitle(anime.titles[0].title[0]._)
       .setAuthor({
         name: anime.url ? anime.url[0] : '',
@@ -284,6 +284,11 @@ export default class anidb {
       .setDescription(anidb.formatDiscordMessage(anime.description[0]))
       .setThumbnail('https://cdn.anidb.net/images/main/' + anime.picture)
       .setURL('https://anidb.net/anime/' + anime.$.id)
-      .addField('Episodes', anime.episodecount[0]);
+      .addFields([
+        {
+          name: 'Episodes',
+          value: anime.episodecount[0],
+        },
+      ]);
   }
 }

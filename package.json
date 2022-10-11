@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.1",
     "@types/dateformat": "^3.0.1",
-    "@types/node": "^18.8.3",
+    "@types/node": "^18.8.4",
     "@types/ws": "^8.5.3",
     "@types/xml2js": "^0.4.11",
     "@typescript-eslint/eslint-plugin": "^5.40.0",

@@ -23,7 +23,7 @@
     "@types/better-sqlite3": "^7.6.3",
     "@types/dateformat": "^3.0.1",
     "@types/node": "^18.11.18",
-    "@types/ws": "^8.5.3",
+    "@types/ws": "^8.5.4",
     "@types/xml2js": "^0.4.11",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.47.1",

@@ -17,9 +17,10 @@ export default class Shubot {
   public readonly database: Database.Database = new Database('database.db', {});
   public readonly discordClient: Discord.Client = new Discord.Client({
     intents: [
-      GatewayIntentBits.Guilds,
-      GatewayIntentBits.GuildMessages,
       GatewayIntentBits.GuildMessageReactions,
+      GatewayIntentBits.GuildMessages,
+      GatewayIntentBits.Guilds,
+      GatewayIntentBits.MessageContent,
     ],
   } as ClientOptions);
   private readonly messageHandlers: messageHandler[] = [];

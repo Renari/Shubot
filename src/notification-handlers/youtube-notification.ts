@@ -37,7 +37,9 @@ export default class youtubeNotification extends notificationHandler {
       .run();
 
     // get the last time we checked for clips
-    const row = this.database.prepare(`SELECT date FROM ${this.databaseTableName}`).get();
+    const row = this.database.prepare(`SELECT date FROM ${this.databaseTableName}`).get() as {
+      date: string;
+    };
     this.lastCheckDate = row && row.date ? new Date(row.date) : new Date();
 
     setInterval(this.checkForNewYoutubeVideos.bind(this), this.youtubeVideoRefreshRate);

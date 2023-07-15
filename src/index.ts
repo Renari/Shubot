@@ -60,12 +60,18 @@ export default class Shubot {
     }
     // post new youtube videos in discord
     if (process.env.YOUTUBE_API_KEY && process.env.YOUTUBE_CHANNEL_ID) {
-      new youtubeNotification(
-        this.discordClient,
-        process.env.YOUTUBE_CHANNEL_ID,
-        process.env.YOUTUBE_API_KEY,
-        this.database,
-      );
+      const channels = process.env.YOUTUBE_CHANNEL_ID.includes(',')
+        ? process.env.YOUTUBE_CHANNEL_ID.split(',')
+        : [process.env.YOUTUBE_CHANNEL_ID];
+
+      for (const channel of channels) {
+        new youtubeNotification(
+          this.discordClient,
+          channel,
+          process.env.YOUTUBE_API_KEY,
+          this.database,
+        );
+      }
     }
   }
 

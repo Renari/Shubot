@@ -7,7 +7,7 @@ module.exports = {
   rules: {
     'no-console': 'error',
     'no-debugger': 'error',
-    'semi': ['error', 'always'],
+    semi: ['error', 'always'],
     '@typescript-eslint/class-name-casing': 'off',
   },
   parserOptions: {
@@ -17,8 +17,8 @@ module.exports = {
     {
       files: ['src/interfaces/*.d.ts'],
       rules: {
-        'semi': ['off']
-      }
-    }
-  ]
+        semi: ['off'],
+      },
+    },
+  ],
 };

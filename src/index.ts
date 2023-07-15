@@ -4,7 +4,6 @@ import logger from './logger';
 
 // message handlers
 import anidbHandler from './message-handlers/anidb-handler';
-import customHandler from './message-handlers/custom-handler';
 import moderationLogHandler from './message-handlers/moderation-log-handler';
 import messageHandler from './message-handlers/message-handler';
 
@@ -44,7 +43,6 @@ export default class Shubot {
 
     // which message handlers we're loading
     this.messageHandlers.push(new anidbHandler());
-    this.messageHandlers.push(new customHandler(this.database));
 
     this.discordClient.on('messageCreate', this.messageHandler.bind(this));
 
@@ -78,11 +76,6 @@ export default class Shubot {
     this.messageHandlers.forEach((handler) => {
       handler.handle(message);
     });
-  }
-
-  private shutdown(code = 0): void {
-    this.discordClient.destroy();
-    process.exit(code);
   }
 }
 

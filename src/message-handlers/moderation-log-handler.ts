@@ -130,7 +130,7 @@ export default class moderationLogHandler {
     (this.channel as Discord.TextChannel)
       .send({
         embeds: [embed],
-        files: [new AttachmentBuilder(new Buffer(description)).setName('messagedata.txt')],
+        files: [new AttachmentBuilder(Buffer.from(description)).setName('messagedata.txt')],
       })
       .catch(Shubot.log.error);
   }

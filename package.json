@@ -24,7 +24,7 @@
     "@types/dateformat": "^3.0.1",
     "@types/node": "^20.5.7",
     "@types/ws": "^8.5.5",
-    "@types/xml2js": "^0.4.11",
+    "@types/xml2js": "^0.4.12",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "dotenv": "^16.3.1",

@@ -11,7 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "async-mutex": "^0.4.0",
-    "axios": "^1.5.1",
+    "axios": "^1.6.0",
     "better-sqlite3": "^9.0.0",
     "dateformat": "5.0.3",
     "discord.js": "^14.13.0",

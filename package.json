@@ -16,7 +16,7 @@
     "dateformat": "5.0.3",
     "discord.js": "^14.15.3",
     "entities": "^5.0.0",
-    "googleapis": "^142.0.0",
+    "googleapis": "^143.0.0",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {

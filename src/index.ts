@@ -8,7 +8,6 @@ import moderationLogHandler from './message-handlers/moderation-log-handler';
 import messageHandler from './message-handlers/message-handler';
 
 // notification handlers
-import twitchNotification from './notification-handlers/twitch-notification';
 import youtubeNotification from './notification-handlers/youtube-notification';
 
 export default class Shubot {

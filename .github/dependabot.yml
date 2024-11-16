@@ -6,10 +6,7 @@ updates:
     interval: daily
     time: "10:00"
   open-pull-requests-limit: 10
-  ignore:
-  - dependency-name: googleapis
-    versions:
-    - 70.0.0
-  - dependency-name: husky
-    versions:
-    - 5.1.2
+  groups:
+    eslint-packages:
+      patters:
+        - "*eslint*"

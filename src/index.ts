@@ -49,16 +49,7 @@ export default class Shubot {
     // handle message deletion
     new moderationLogHandler(this.discordClient);
 
-    // post new twitch clips in discord
-    if (process.env.TWITCH_CLIENT_ID && process.env.TWITCH_CLIENT_SECRET) {
-      new twitchNotification(
-        this.discordClient,
-        process.env.TWITCH_CLIENT_ID,
-        process.env.TWITCH_CLIENT_SECRET,
-        this.database,
-      );
-    }
-    // post new youtube videos in discord
+    // post new YouTube videos in discord
     if (process.env.YOUTUBE_API_KEY && process.env.YOUTUBE_CHANNEL_ID) {
       const channels = process.env.YOUTUBE_CHANNEL_ID.includes(',')
         ? process.env.YOUTUBE_CHANNEL_ID.split(',')

@@ -8,6 +8,7 @@ export default class youtubeNotification extends notificationHandler {
   private readonly database: Database;
   private readonly databaseTableName = 'latestYoutubeVideoDate';
   private readonly discordChannelId: string = '725449150573051926';
+  private readonly youtubeChannelId: string;
   private readonly youtubeInstance: youtube;
   private readonly youtubeVideoRefreshRate = 3600000; // once per hour
 
@@ -21,25 +22,24 @@ export default class youtubeNotification extends notificationHandler {
   ) {
     super(discordClient);
     this.database = database;
+    this.youtubeChannelId = channelId;
     this.youtubeInstance = new youtube(apiKey, channelId);
 
     // make sure our database table exists
     database
       .prepare(
-        `CREATE TABLE IF NOT EXISTS ${this.databaseTableName}
-         (
-             date
-             TEXT
-             NOT
-             NULL
-         );`,
+        `CREATE TABLE IF NOT EXISTS ${this.databaseTableName} 
+          ( 
+            channelid TEXT NOT NULL UNIQUE,
+            date TEXT NOT NULL
+          );`,
       )
       .run();
 
     // get the last time we checked for clips
-    const row = this.database.prepare(`SELECT date FROM ${this.databaseTableName}`).get() as {
-      date: string;
-    };
+    const row = this.database
+      .prepare(`SELECT date FROM ${this.databaseTableName} WHERE channelid = ?`)
+      .get(this.youtubeChannelId) as { date: string };
     this.lastCheckDate = row && row.date ? new Date(row.date) : new Date();
 
     setInterval(this.checkForNewYoutubeVideos.bind(this), this.youtubeVideoRefreshRate);
@@ -55,7 +55,11 @@ export default class youtubeNotification extends notificationHandler {
           // post new videos to discord
           const title = videos.items[i].snippet?.title ? videos.items[i].snippet?.title : video;
           Shubot.log.info(`Found YouTube video ${title}`);
-          this.sendDiscordMessage(this.discordChannelId, `https://youtu.be/${video}`);
+
+          this.sendDiscordMessage(
+            this.discordChannelId,
+            `<@&1307279940353261629> https://youtu.be/${video}`,
+          );
         }
         // update our latest video date
         this.upsertDate();
@@ -66,10 +70,12 @@ export default class youtubeNotification extends notificationHandler {
   private upsertDate(): void {
     this.lastCheckDate = new Date();
     this.database
-      .prepare(`UPDATE ${this.databaseTableName} SET date = ?;`)
-      .run(this.lastCheckDate.toISOString());
+      .prepare(`UPDATE ${this.databaseTableName} SET date = ? WHERE channelid = ?;`)
+      .run(this.lastCheckDate.toISOString(), this.youtubeChannelId);
     this.database
-      .prepare(`INSERT INTO ${this.databaseTableName} (date) SELECT ? WHERE (SELECT Changes() = 0)`)
-      .run(this.lastCheckDate.toISOString());
+      .prepare(
+        `INSERT INTO ${this.databaseTableName} (date) SELECT ? WHERE (SELECT Changes() = 0) AND channelid = ?`,
+      )
+      .run(this.lastCheckDate.toISOString(), this.youtubeChannelId);
   }
 }

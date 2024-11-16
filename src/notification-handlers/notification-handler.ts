@@ -15,7 +15,7 @@ export default class notificationHandler {
     if (channel?.type === ChannelType.GuildText || channel?.type === ChannelType.GuildNews) {
       (channel as Discord.TextChannel).send(message).catch(Shubot.log.error);
     } else {
-      Shubot.log.error('Unable to find clips channel');
+      Shubot.log.error('Unable to find channel');
     }
   }
 }

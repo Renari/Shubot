@@ -70,12 +70,14 @@ export default class youtubeNotification extends notificationHandler {
   private upsertDate(): void {
     this.lastCheckDate = new Date();
     this.database
-      .prepare(`UPDATE ${this.databaseTableName} SET date = ? WHERE channelid = ?;`)
-      .run(this.lastCheckDate.toISOString(), this.youtubeChannelId);
-    this.database
       .prepare(
-        `INSERT INTO ${this.databaseTableName} (date) SELECT ? WHERE (SELECT Changes() = 0) AND channelid = ?`,
+        `INSERT INTO ${this.databaseTableName} VALUES (?, ?) ON CONFLICT(channelid) DO UPDATE SET date = ? WHERE channelid = ?`,
       )
-      .run(this.lastCheckDate.toISOString(), this.youtubeChannelId);
+      .run(
+        this.lastCheckDate.toISOString(),
+        this.youtubeChannelId,
+        this.lastCheckDate.toISOString(),
+        this.youtubeChannelId,
+      );
   }
 }

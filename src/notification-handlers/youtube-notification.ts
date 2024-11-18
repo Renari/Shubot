@@ -74,8 +74,8 @@ export default class youtubeNotification extends notificationHandler {
         `INSERT INTO ${this.databaseTableName} VALUES (?, ?) ON CONFLICT(channelid) DO UPDATE SET date = ? WHERE channelid = ?`,
       )
       .run(
-        this.lastCheckDate.toISOString(),
         this.youtubeChannelId,
+        this.lastCheckDate.toISOString(),
         this.lastCheckDate.toISOString(),
         this.youtubeChannelId,
       );

@@ -12,7 +12,7 @@
   "dependencies": {
     "async-mutex": "^0.5.0",
     "axios": "^1.7.9",
-    "better-sqlite3": "^11.7.0",
+    "better-sqlite3": "^11.7.2",
     "dateformat": "4.6.3",
     "discord.js": "^14.17.2",
     "entities": "^6.0.0",

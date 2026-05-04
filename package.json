@@ -14,7 +14,7 @@
     "axios": "^1.16.0",
     "better-sqlite3": "^12.9.0",
     "dateformat": "4.6.3",
-    "discord.js": "^14.26.3",
+    "discord.js": "^14.26.4",
     "entities": "^8.0.0",
     "googleapis": "^171.4.0",
     "xml2js": "^0.6.2"
